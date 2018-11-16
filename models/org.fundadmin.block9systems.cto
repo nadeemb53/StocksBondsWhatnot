@@ -12,31 +12,91 @@
  * limitations under the License.
  */
 
-/**
- * Write your model definitions here
- */
-
 namespace org.fundadmin.block9systems
 
-participant SampleParticipant identified by participantId {
-  o String participantId
-  o String firstName
-  o String lastName
+asset Share identified by shareId {
+  o String shareId
+  o Integer count
+  --> FundAdministrator fundadmin
+  --> AssetManager holder //fixme : holder can be the fund-administrator or assetmanager;
 }
 
-asset SampleAsset identified by assetId {
-  o String assetId
-  --> SampleParticipant owner
-  o String value
+asset Bonds identified by bondId {
+  o String bondId
+  o Integer count
+  --> FundAdministrator fundadmin
+  --> AssetManager holder
 }
 
-transaction SampleTransaction {
-  --> SampleAsset asset
-  o String newValue
+asset Proposal identified by proposalId {
+  o String proposalId
+  o TradeStatus type
+  o Integer count
+  o Double price
+  --> FundAdministrator fundadmin
+  --> AssetManager assetmanager//Trader can be obtained by getCurrentParticipant()
 }
 
-event SampleEvent {
-  --> SampleAsset asset
-  o String oldValue
-  o String newValue
+asset Trade identified by tradeId {
+  o String tradeId
+  o Integer count
+  o Double price
+  --> AssetManager buyer
+  --> AssetManager seller
+  --> FundAdministrator fundadmin
+}
+
+abstract participant User identified by email {
+  o String email
+  o String name
+}
+
+participant AssetManager extends User {
+  o Double balance
+}
+
+participant FundAdministrator extends User{
+  o Integer issuedShareCount
+  o Integer issuedBonds
+  --> AssetManager owner  
+}
+
+participant Auditor extends User{
+  o Boolean isValidated
+  o Integer issuedBonds
+  --> AssetManager owner
+  --> FundAdministrator fundadmin
+}
+
+//check-above
+
+enum TradeStatus {
+  o FOR_SALE
+  o FOR_BUY
+}
+
+transaction ShareIssue {
+  o String detail
+  o Integer count
+  o Double price
+  --> FundAdministrator fundadmin
+}
+
+transaction BondIssue {
+  o String detail
+  o Integer count
+  o Double price
+  --> FundAdministrator fundadmin
+}
+
+transaction Propose {
+  o TradeStatus proposalType
+  o Integer count
+  o Double price
+  --> FundAdministrator fundadmin
+}
+
+transaction ModifyProposal {
+  o Double newPrice
+  --> Proposal proposal //fix : will be better to replace with propose transaction id or proposal id.
 }

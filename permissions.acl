@@ -12,48 +12,126 @@
  * limitations under the License.
  */
 
-/**
- * Sample access control list.
- */
-rule EverybodyCanReadEverything {
-    description: "Allow all participants read access to all resources"
-    participant: "org.fundadmin.block9systems.SampleParticipant"
-    operation: READ
-    resource: "org.fundadmin.block9systems.*"
-    action: ALLOW
-}
-
-rule EverybodyCanSubmitTransactions {
-    description: "Allow all participants to submit transactions"
-    participant: "org.fundadmin.block9systems.SampleParticipant"
-    operation: CREATE
-    resource: "org.fundadmin.block9systems.SampleTransaction"
-    action: ALLOW
-}
-
-rule OwnerHasFullAccessToTheirAssets {
-    description: "Allow all participants full access to their assets"
-    participant(p): "org.fundadmin.block9systems.SampleParticipant"
-    operation: ALL
-    resource(r): "org.fundadmin.block9systems.SampleAsset"
-    condition: (r.owner.getIdentifier() === p.getIdentifier())
-    action: ALLOW
-}
-
-rule SystemACL {
-  description:  "System ACL to permit all access"
-  participant: "org.hyperledger.composer.system.Participant"
-  operation: ALL
-  resource: "org.hyperledger.composer.system.**"
+rule OwnerCompanyShareIssue {
+  description: "Only FundAdministrator should be able to update the company through ShareIssue transaction"
+  participant(p): "org.fundadmin.block9systems.AssetManager"
+  operation: UPDATE
+  resource(c): "org.fundadmin.block9systems.FundAdministrator"
+  transaction: "org.fundadmin.block9systems.ShareIssue"
+  condition: (c.owner.getIdentifier() == p.getIdentifier())
   action: ALLOW
 }
 
-rule NetworkAdminUser {
-    description: "Grant business network administrators full access to user resources"
-    participant: "org.hyperledger.composer.system.NetworkAdmin"
-    operation: ALL
-    resource: "**"
-    action: ALLOW
+rule OwnerShareShareIssue {
+  description: "Only the Fund Administrator should be able to issue share of the company through ShareIssue transaction"
+  participant: "org.fundadmin.block9systems.FundAdministrator"
+  operation: CREATE
+  resource: "org.fundadmin.block9systems.Share"
+  transaction: "org.fundadmin.block9systems.ShareIssue"
+  action: ALLOW
+}
+
+rule OwnerSharePropose {
+  description: "Asset Manager should be able to create, edit and delete share entry through propose transaction"
+  participant: "org.fundadmin.block9systems.AssetManager"
+  operation: ALL
+  resource: "org.fundadmin.block9systems.Share"
+  transaction: "org.fundadmin.block9systems.Propose"
+  action: ALLOW
+}
+
+
+rule AssetManagerShareIssue {
+  description: "Asset Manager should have access to share issue transaction"
+  participant: "org.fundadmin.block9systems.AssetManager"
+  operation: CREATE
+  resource: "org.fundadmin.block9systems.ShareIssue"
+  action: ALLOW
+}
+
+rule AssetManagerSharePropose {
+  description: "Asset Manager should be able to change ownership of share through Propose transaction"
+  participant: "org.fundadmin.block9systems.AssetManager"
+  operation: READ, UPDATE
+  resource: "org.fundadmin.block9systems.Share"
+  transaction: "org.fundadmin.block9systems.Propose"
+  action: ALLOW
+}
+
+rule AssetManagerProposalPropose {
+  description: "AssetManager should have all operation access on proposal through propose transaction"
+  participant: "org.fundadmin.block9systems.AssetManager"
+  operation: ALL
+  resource: "org.fundadmin.block9systems.Proposal"
+  transaction: "org.fundadmin.block9systems.Propose"
+  action: ALLOW
+}
+
+rule AssetManagerProposal {
+  description: "All Asset Managers should have access to proposal transaction"
+  participant: "org.fundadmin.block9systems.AssetManager"
+  operation: CREATE
+  resource: "org.fundadmin.block9systems.Propose"
+  action: ALLOW
+}
+
+rule AssetManagerAssetManagerProposal {
+  description: "Asset Manager should be able to update other asset manager balance through proposal settlement"
+  participant: "org.fundadmin.block9systems.AssetManager"
+  operation: UPDATE
+  resource: "org.fundadmin.block9systems.AssetManager"
+  transaction: "org.fundadmin.block9systems.Propose"
+  action: ALLOW
+}
+
+rule AssetManagerTradeProposal {
+  description: "Asset Manager should be able to create trade records only through proposal settlement"
+  participant: "org.fundadmin.block9systems.AssetManager"
+  operation: CREATE
+  resource: "org.fundadmin.block9systems.AssetManager"
+  transaction: "org.fundadmin.block9systems.Propose"
+  action: ALLOW
+}
+
+rule ViewAccessForParticipant {
+  description: "Participant should have read access to all resources"
+  participant: "org.fundadmin.block9systems.AssetManager"
+  operation: READ
+  resource: "org.fundadmin.block9systems.**"
+  action: ALLOW
+}
+
+rule NetworkAdminUserFundAdminACL {
+  description: "Allow network admin full access on Fund Administrator participant"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: ALL
+  resource: "org.fundadmin.block9systems.FundAdministrator"
+  action: ALLOW
+}
+
+rule NetworkAdminUserAssetManagerACL {
+  description: "Allow network admin full access on Asset Manager Participant"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: ALL
+  resource: "org.fundadmin.block9systems.AssetManager"
+  action: ALLOW
+}
+
+rule NetworkAdminUserAuditorACL {
+  description: "Allow network admin full access on Asset Manager Participant"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: ALL
+  resource: "org.fundadmin.block9systems.Auditor"
+  action: ALLOW
+}
+
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
 }
 
 rule NetworkAdminSystem {
