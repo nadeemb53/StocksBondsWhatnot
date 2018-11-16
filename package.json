@@ -1,0 +1,36 @@
+{
+  "engines": {
+    "composer": "^0.20.1"
+  },
+  "name": "fundadmin-block9systems",
+  "version": "0.0.1",
+  "description": "multiple fund administrations and exchange",
+  "scripts": {
+    "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/fundadmin-block9systems.bna",
+    "pretest": "npm run lint",
+    "lint": "eslint .",
+    "test": "nyc mocha -t 0 test/*.js && cucumber-js"
+  },
+  "keywords": [
+    "composer",
+    "composer-network"
+  ],
+  "author": "nadeem-bhati",
+  "email": "nadeemb53@gmail.com",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "composer-admin": "^0.20.1",
+    "composer-cli": "^0.20.1",
+    "composer-client": "^0.20.1",
+    "composer-common": "^0.20.1",
+    "composer-connector-embedded": "^0.20.1",
+    "composer-cucumber-steps": "^0.20.1",
+    "chai": "latest",
+    "chai-as-promised": "latest",
+    "cucumber": "^2.2.0",
+    "eslint": "latest",
+    "nyc": "latest",
+    "mkdirp": "latest",
+    "mocha": "latest"
+  }
+}
