@@ -57,7 +57,6 @@ participant AssetManager extends User {
 
 participant FundAdministrator extends User{
   o Integer issuedShareCount
-  o Integer issuedBonds
   --> AssetManager owner  
 }
 
@@ -100,3 +99,4 @@ transaction ModifyProposal {
   o Double newPrice
   --> Proposal proposal //fix : will be better to replace with propose transaction id or proposal id.
 }
+

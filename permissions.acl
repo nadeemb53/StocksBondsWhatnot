@@ -24,7 +24,7 @@ rule OwnerCompanyShareIssue {
 
 rule OwnerShareShareIssue {
   description: "Only the Fund Administrator should be able to issue share of the company through ShareIssue transaction"
-  participant: "org.fundadmin.block9systems.FundAdministrator"
+  participant: "org.fundadmin.block9systems.AssetManager"
   operation: CREATE
   resource: "org.fundadmin.block9systems.Share"
   transaction: "org.fundadmin.block9systems.ShareIssue"
@@ -109,6 +109,22 @@ rule NetworkAdminUserFundAdminACL {
   action: ALLOW
 }
 
+/*rule NetworkAdminShareIssueACL {
+  description: "Allow network admin create access to ShareIssue"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: CREATE
+  resource: "org.fundadmin.block9systems.ShareIssue"
+  action: ALLOW
+}*/
+
+/*rule NetworkAdminShareACL {
+  description: "Allow network admin create access to ShareIssue"
+  participant: "org.hyperledger.composer.system.NetworkAdmin"
+  operation: ALL
+  resource: "org.fundadmin.block9systems.Share"
+  action: ALLOW
+}*/
+
 rule NetworkAdminUserAssetManagerACL {
   description: "Allow network admin full access on Asset Manager Participant"
   participant: "org.hyperledger.composer.system.NetworkAdmin"
@@ -134,10 +150,11 @@ rule SystemACL {
   action: ALLOW
 }
 
-rule NetworkAdminSystem {
+/*rule NetworkAdminSystem {
     description: "Grant business network administrators full access to system resources"
     participant: "org.hyperledger.composer.system.NetworkAdmin"
     operation: ALL
     resource: "org.hyperledger.composer.system.**"
     action: ALLOW
-}
+}*/
+

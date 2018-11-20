@@ -1,0 +1,33 @@
+/**
+ * New query file
+ */
+query selectSaleProposalOfCompany {
+  description: "select sale proposals of specific company's share"
+  statement:
+      SELECT org.fundadmin.block9systems.Proposal
+        WHERE (fundadmin == _$company AND type == 'FOR_SALE' AND price <= _$price)
+        
+}
+
+query selectShareByUserAndCompanyLimit {
+  description: "select the shares os specific company belonging to specific user"
+  statement:
+      SELECT org.fundadmin.block9systems.Share
+        WHERE (holder == _$owner AND fundadmin == _$company)
+        LIMIT _$limit
+}
+
+query selectShareByUserAndCompany {
+  description: "select the shares os specific company belonging to specific user"
+  statement:
+      SELECT org.fundadmin.block9systems.Share
+        WHERE (holder == _$owner AND fundadmin == _$company)
+}
+
+query selectBuyProposalOfCompany {
+  description: "select buy proposals of specific company's share"
+  statement:
+      SELECT org.fundadmin.block9systems.Proposal
+        WHERE (fundadmin == _$company AND type == 'FOR_BUY' AND price >= _$price)
+        
+}
